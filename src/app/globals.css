@@ -22,4 +22,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+
+  @apply selection:text-green-500;
 }
