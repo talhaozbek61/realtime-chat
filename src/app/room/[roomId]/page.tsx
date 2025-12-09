@@ -71,7 +71,7 @@ export default function Page() {
     },
   });
 
-  const { mutate: sendMessage, isPending } = useMutation({
+  const { mutate: sendMessage, isPending: inputPending } = useMutation({
     mutationFn: async ({ text }: { text: string }) => {
       await client.messages.post(
         { sender: username, text },
@@ -96,7 +96,7 @@ export default function Page() {
     },
   });
 
-  const { mutate: destroyRoom } = useMutation({
+  const { mutate: destroyRoom, isPending: destroyPending } = useMutation({
     mutationFn: async () => {
       await client.room.delete(null, { query: { roomId } });
     },
@@ -151,10 +151,11 @@ export default function Page() {
 
         <button
           onClick={() => destroyRoom()}
+          disabled={destroyPending}
           className="text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2 disabled:opacity-50 cursor-pointer"
         >
           <span className="group-hover:animate-pulse">💣</span>
-          DESTROY NOW
+          {destroyPending ? "Wait..." : "DESTROY NOW"}
         </button>
       </header>
 
@@ -220,10 +221,10 @@ export default function Page() {
               sendMessage({ text: input });
               inputRef.current?.focus();
             }}
-            disabled={!input.trim() || isPending}
+            disabled={!input.trim() || inputPending}
             className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:text-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            SEND
+            {inputPending ? "Sending..." : "Send"}
           </button>
         </div>
       </div>
